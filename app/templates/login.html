@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="panel auth-panel">
+  <h1>Acesso Interno</h1>
+  <p class="lead">Autentique-se com seu e-mail corporativo para acessar a plataforma de mineração espacial.</p>
+
+  <form method="post" action="{{ url_for('auth.login_post') }}" class="js-safe-form form-grid">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+    <label for="email">E-mail</label>
+    <input id="email" name="email" type="email" required maxlength="255"
+      data-validate="sql"
+      pattern="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+      placeholder="colaborador@empresa.com">
+
+    <label for="senha">Senha</label>
+    <input id="senha" name="senha" type="password" required
+      minlength="8" maxlength="100"
+      placeholder="Sua senha de acesso">
+
+    <button type="submit" class="btn" style="margin-top:4px">Entrar na Plataforma</button>
+  </form>
+
+  <p class="small-note">
+    Acesso para avaliacao?
+    <a href="{{ url_for('auth.cadastro') }}">Criar conta de demonstração</a>.
+  </p>
+</section>
+{% endblock %}

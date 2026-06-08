@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="panel auth-panel">
+  <h1>
+    {% if current_user and current_role == "ADMIN" %}
+      Criar Conta de Colaborador
+    {% else %}
+      Criar Conta de Demonstração
+    {% endif %}
+  </h1>
+  <p class="lead">
+    {% if current_user and current_role == "ADMIN" %}
+      Somente administradores podem criar contas com role ADMIN.
+    {% else %}
+      Pagina disponibilizada para avaliação dos professores.
+    {% endif %}
+  </p>
+
+  <form method="post" action="{{ url_for('auth.cadastro_post') }}" class="js-safe-form form-grid">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+    <label for="nome_completo">Nome completo</label>
+    <input id="nome_completo" name="nome_completo" type="text" required
+      maxlength="140" data-validate="sql"
+      placeholder="Nome do colaborador">
+
+    <label for="email">E-mail</label>
+    <input id="email" name="email" type="email" required maxlength="255"
+      data-validate="sql"
+      pattern="^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+      placeholder="colaborador@empresa.com">
+
+    <label for="senha">Senha</label>
+    <input id="senha" name="senha" type="password" required
+      minlength="8" maxlength="100"
+      placeholder="Ex.: Abc@12345">
+
+    {% if current_user and current_role == "ADMIN" %}
+      <label for="role">Perfil de acesso</label>
+      <select id="role" name="role">
+        <option value="ANALISTA">ANALISTA</option>
+        <option value="ADMIN">ADMIN</option>
+      </select>
+    {% endif %}
+
+    <button type="submit" class="btn" style="margin-top:4px">Criar Conta</button>
+  </form>
+</section>
+{% endblock %}

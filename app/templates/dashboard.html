@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h1>Dashboard de Viabilidade</h1>
+    <p class="lead">Ranking de asteroides por potencial econômico e técnico de extração.</p>
+  </div>
+
+  <div class="action-row">
+    <form method="post" action="{{ url_for('main.exportar_dashboard_csv') }}" class="inline-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button type="submit" class="btn">&#8595; Exportar CSV</button>
+    </form>
+
+    <form method="post" action="{{ url_for('main.importar_dashboard_csv') }}" enctype="multipart/form-data" class="inline-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="file" name="arquivo_dashboard" accept=".csv,.xlsx,.xls" required>
+      <button type="submit" class="btn secondary">&#8593; Importar CSV</button>
+    </form>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Codigo</th>
+          <th>Designacao</th>
+          <th>Classe</th>
+          <th>Diametro km</th>
+          <th>Delta-v km/s</th>
+          <th>Mineral</th>
+          <th>Valor est. USD</th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for asteroide in asteroides %}
+          {% if asteroide.score_viabilidade >= 75 %}
+            {% set sc = "high" %}
+          {% elif asteroide.score_viabilidade >= 50 %}
+            {% set sc = "mid" %}
+          {% else %}
+            {% set sc = "low" %}
+          {% endif %}
+          <tr>
+            <td><span class="data-val">{{ asteroide.codigo }}</span></td>
+            <td>{{ asteroide.nome }}</td>
+            <td>
+              {% if asteroide.classe_espectral %}
+                <span class="badge">{{ asteroide.classe_espectral }}</span>
+              {% else %}—{% endif %}
+            </td>
+            <td><span class="data-val">{{ "%.3f"|format(asteroide.diametro_km) if asteroide.diametro_km else "—" }}</span></td>
+            <td><span class="data-val">{{ "%.3f"|format(asteroide.delta_v_kms) if asteroide.delta_v_kms else "—" }}</span></td>
+            <td>{{ asteroide.mineral_destaque or "—" }}</td>
+            <td><span class="data-val">{{ "{:,.0f}".format(asteroide.valor_estimado_usd or 0) }}</span></td>
+            <td>
+              <div class="score-cell">
+                <span class="score-val score-{{ sc }}">{{ "%.1f"|format(asteroide.score_viabilidade) }}</span>
+                <div class="score-track">
+                  <div class="score-fill fill-{{ sc }}" style="width:{{ "%.1f"|format(asteroide.score_viabilidade) }}%"></div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:32px">Nenhum asteroide cadastrado.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

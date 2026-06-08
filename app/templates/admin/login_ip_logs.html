@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h1>Logs de Tentativas por IP</h1>
+    <p class="lead">IPs com volume suspeito de falha de autenticação nas ultimas 24 horas.</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>IP de Origem</th>
+          <th>Total Falhas</th>
+          <th>Primeira Data</th>
+          <th>Primeira Hora</th>
+          <th>Ultima Data</th>
+          <th>Ultima Hora</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ip in ips %}
+          <tr>
+            <td><span class="data-val" style="color:var(--red)">{{ ip.ip_origem }}</span></td>
+            <td>
+              <span class="badge badge-baixa data-val">{{ ip.total_falhas }}</span>
+            </td>
+            <td><span class="data-val">{{ ip.primeira_data }}</span></td>
+            <td><span class="data-val">{{ ip.primeira_hora }}</span></td>
+            <td><span class="data-val">{{ ip.ultima_data }}</span></td>
+            <td><span class="data-val">{{ ip.ultima_hora }}</span></td>
+          </tr>
+        {% else %}
+          <tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:32px">Nenhum IP suspeito encontrado.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

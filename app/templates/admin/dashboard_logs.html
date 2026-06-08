@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h1>Logs de Importacao / Exportacao</h1>
+    <p class="lead">Historico de operações em arquivo realizadas no dashboard.</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Hora</th>
+          <th>Usuario</th>
+          <th>Operacao</th>
+          <th>Formato</th>
+          <th>Arquivo</th>
+          <th>Registros</th>
+          <th>Status</th>
+          <th>IP</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log, email in logs %}
+          <tr>
+            <td><span class="data-val">{{ log.ocorreu_em_data }}</span></td>
+            <td><span class="data-val">{{ log.ocorreu_em_hora }}</span></td>
+            <td>{{ email }}</td>
+            <td>
+              {% if log.operacao == "EXPORTACAO" %}
+                <span class="badge badge-alta">{{ log.operacao }}</span>
+              {% else %}
+                <span class="badge badge-media">{{ log.operacao }}</span>
+              {% endif %}
+            </td>
+            <td><span class="badge">{{ log.formato }}</span></td>
+            <td><span class="data-val">{{ log.nome_arquivo or "—" }}</span></td>
+            <td><span class="data-val">{{ log.total_registros or "—" }}</span></td>
+            <td>
+              {% if log.status == "SUCESSO" %}
+                <span class="badge badge-alta">{{ log.status }}</span>
+              {% else %}
+                <span class="badge badge-baixa">{{ log.status }}</span>
+              {% endif %}
+            </td>
+            <td><span class="data-val">{{ log.ip_origem or "—" }}</span></td>
+          </tr>
+        {% else %}
+          <tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:32px">Nenhum log encontrado.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

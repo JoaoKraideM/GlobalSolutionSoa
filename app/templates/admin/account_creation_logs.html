@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h1>Contas Criadas por Admins</h1>
+    <p class="lead">Rastreabilidade de onboarding interno realizado por administradores.</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Hora</th>
+          <th>Admin</th>
+          <th>Conta Criada</th>
+          <th>Perfil</th>
+          <th>IP</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log, email_admin, email_criado in contas %}
+          <tr>
+            <td><span class="data-val">{{ log.ocorreu_em_data }}</span></td>
+            <td><span class="data-val">{{ log.ocorreu_em_hora }}</span></td>
+            <td style="color:var(--cyan)">{{ email_admin }}</td>
+            <td>{{ email_criado }}</td>
+            <td>
+              {% if log.novo_usuario_role == "ADMIN" %}
+                <span class="badge badge-baixa">{{ log.novo_usuario_role }}</span>
+              {% else %}
+                <span class="badge badge-media">{{ log.novo_usuario_role }}</span>
+              {% endif %}
+            </td>
+            <td><span class="data-val">{{ log.ip_origem or "—" }}</span></td>
+          </tr>
+        {% else %}
+          <tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:32px">Nenhuma conta criada por admin encontrada.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

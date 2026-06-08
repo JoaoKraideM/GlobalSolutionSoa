@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h1>Recomendacoes da IA</h1>
+    <p class="lead">Sugestões automatizadas para decisão de missao e priorização de ativos espaciais.</p>
+  </div>
+
+  <div class="card-grid">
+    {% for recomendacao, analise, asteroide in registros %}
+      {% set cls = analise.classificacao | lower %}
+      <article class="card card-{{ cls }}">
+        <header style="margin-bottom:12px">
+          <h2>{{ asteroide.nome }} <small>({{ asteroide.codigo }})</small></h2>
+          <span class="badge badge-{{ cls }}">{{ analise.classificacao }}</span>
+        </header>
+
+        <p style="font-size:13px;color:var(--text-secondary);margin:10px 0 6px">
+          <strong style="color:var(--text-primary)">Resumo:</strong>
+          {{ recomendacao.resumo_recomendacao }}
+        </p>
+
+        <p style="font-size:13px;color:var(--text-secondary);margin:6px 0">
+          <strong style="color:var(--text-primary)">Plano:</strong>
+          {{ recomendacao.plano_acao or "Nao informado." }}
+        </p>
+
+        <p style="font-size:13px;margin:6px 0">
+          <strong style="color:var(--text-primary)">Confianca:</strong>
+          {% set conf = recomendacao.confianca or 0 %}
+          {% if conf >= 75 %}
+            <span style="color:var(--green);font-family:var(--font-data);font-weight:700">{{ "%.1f"|format(conf) }}%</span>
+          {% elif conf >= 50 %}
+            <span style="color:var(--gold);font-family:var(--font-data);font-weight:700">{{ "%.1f"|format(conf) }}%</span>
+          {% else %}
+            <span style="color:var(--red);font-family:var(--font-data);font-weight:700">{{ "%.1f"|format(conf) }}%</span>
+          {% endif %}
+        </p>
+
+        <p class="meta">
+          Modelo: {{ recomendacao.modelo_ia }}
+          &nbsp;|&nbsp;
+          Score:
+          {% if analise.score_viabilidade >= 75 %}
+            <span class="score-high">{{ "%.1f"|format(analise.score_viabilidade) }}</span>
+          {% elif analise.score_viabilidade >= 50 %}
+            <span class="score-mid">{{ "%.1f"|format(analise.score_viabilidade) }}</span>
+          {% else %}
+            <span class="score-low">{{ "%.1f"|format(analise.score_viabilidade) }}</span>
+          {% endif %}
+        </p>
+      </article>
+    {% else %}
+      <p style="color:var(--text-muted)">Nenhuma recomendação disponivel no momento.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
